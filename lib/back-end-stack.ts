@@ -15,6 +15,9 @@ import {
   ServerlessRdb,
 } from './serverless-rdb'
 import {
+  ContainerDeployment,
+} from './container-deployment'
+import {
   AppConfig
 } from './config'
 
@@ -33,7 +36,16 @@ export class BackEndStack extends Stack {
     const db = new ServerlessRdb(this, 'Db', {
       ...props.db,
       vpc: network.vpc,
-      peerSecurityGroup: service.securityGroup,
+      peerSecurityGroup: service.albService.service.connections.securityGroups[0],
+    })
+    const deployment = new ContainerDeployment(this, 'Deployment', {
+      ...props.deployment,
+      service: service.albService.service,
+      loadBalancer: service.albService.loadBalancer,
+      targetGroup: service.albService.targetGroup,
+      containerDefinition: service.containerDefinition,
+      protocol: service.protocol,
+      vpc: network.vpc,
     })
   }
 }

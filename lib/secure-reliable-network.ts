@@ -7,7 +7,6 @@ import {
 import {
   Vpc,
   SubnetType,
-  InterfaceVpcEndpointAwsService,
 } from 'aws-cdk-lib/aws-ec2'
 import {
   SecureReliableNetworkConfig,
@@ -35,13 +34,12 @@ export class SecureReliableNetwork extends Resource {
       privateSubnetConf,
     ]
     const maxAzs = 2
-    const natGateways = props.externalAccess ? maxAzs : 0
-    const vpc = new Vpc(this, 'SecureReliableVpc', {
+    const natGateways = props.allowExternalAccess ? maxAzs : 0
+    this.vpc = new Vpc(this, 'SecureReliableVpc', {
       maxAzs,
       natGateways,
       subnetConfiguration,
     })
-    this.vpc = vpc
   }
 
 }

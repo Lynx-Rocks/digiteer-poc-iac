@@ -9,6 +9,7 @@ yarn-error.log
 # CDK assets
 .cdk.staging
 cdk.out
+cdk.context.json
 
 # IDE - VSCode
 .vscode/*

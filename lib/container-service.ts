@@ -8,15 +8,16 @@ import {
   Resource,
 } from 'aws-cdk-lib'
 import {
-  Vpc,
+  IVpc,
   SecurityGroup,
   GatewayVpcEndpointAwsService,
   InterfaceVpcEndpointAwsService,
 } from 'aws-cdk-lib/aws-ec2'
 import {
   Cluster,
-  ContainerImage,
+  AssetImage,
   FargateTaskDefinition,
+  ContainerDefinition,
   DeploymentControllerType,
 } from 'aws-cdk-lib/aws-ecs'
 import {
@@ -33,12 +34,14 @@ import {
 } from './config'
 
 export interface ContainerServiceProps extends ContainerServiceConfig {
-  readonly vpc: Vpc
+  readonly vpc: IVpc
 }
 
 export class ContainerService extends Resource {
 
-  public securityGroup: SecurityGroup
+  public readonly albService: ApplicationLoadBalancedFargateService
+  public readonly containerDefinition: ContainerDefinition
+  public readonly protocol: ApplicationProtocol
 
   constructor(scope: Construct, id: string, props: ContainerServiceProps) {
     super(scope, id)
@@ -56,6 +59,7 @@ export class ContainerService extends Resource {
         })
     }
     const protocol = props.protocol == 'http' ? ApplicationProtocol.HTTP : ApplicationProtocol.HTTPS
+    this.protocol = protocol
     if (protocol == ApplicationProtocol.HTTPS && !domainName) {
       throw new Error('HTTPS protocol requires a domain.')
     }
@@ -80,7 +84,6 @@ export class ContainerService extends Resource {
     const securityGroup = new SecurityGroup(this, 'ServiceSecurityGroup', {
       vpc,
     })
-    this.securityGroup = securityGroup
     const securityGroups = [
       securityGroup,
     ]
@@ -88,15 +91,19 @@ export class ContainerService extends Resource {
       containerInsights: true,
       vpc,
     })
-    const taskDefinition = new FargateTaskDefinition(this, 'ServiceTask', {
-      family: props.taskFamily,
-    })
+    const taskDefinition = new FargateTaskDefinition(this, 'ServiceTask')
     const directory = join(__dirname, 'demo')
-    const image = ContainerImage.fromAsset(directory)
+    const containerPort = props.port || 8080
+    const buildArgs = {
+      PORT: containerPort.toString(),
+    }
+    const image = new AssetImage(directory, {
+      buildArgs,
+    })
     const portMappings = [{
-      containerPort: 8080,
+      containerPort,
     }]
-    taskDefinition.addContainer('TaskContainer', {
+    this.containerDefinition = taskDefinition.addContainer('TaskContainer', {
       image,
       portMappings,
     })
@@ -109,6 +116,7 @@ export class ContainerService extends Resource {
       securityGroups,
       cluster,
     })
+    this.albService = albService
     albService.node.addDependency(s3VpcEndpoint)
     albService.node.addDependency(ecrVpcEndpoint)
     albService.node.addDependency(dockerVpcEndpoint)

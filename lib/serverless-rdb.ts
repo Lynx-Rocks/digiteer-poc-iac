@@ -5,7 +5,8 @@ import {
   Resource,
 } from 'aws-cdk-lib'
 import {
-  Vpc,
+  IVpc,
+  ISecurityGroup,
   SecurityGroup,
   Peer,
   Port,
@@ -24,8 +25,8 @@ import {
 } from './config'
 
 export interface ServerlessRdbProps extends ServerlessRdbConfig {
-  readonly vpc: Vpc
-  readonly peerSecurityGroup: SecurityGroup
+  readonly vpc: IVpc
+  readonly peerSecurityGroup: ISecurityGroup
 }
 
 export class ServerlessRdb extends Resource {

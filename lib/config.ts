@@ -1,13 +1,13 @@
 export interface SecureReliableNetworkConfig {
-  readonly externalAccess?: boolean
+  readonly allowExternalAccess?: boolean
 }
 
 export interface ContainerServiceConfig {
-  readonly taskFamily?: string
   readonly rootDomain?: string
   readonly subdomain?: string
   readonly dnsZoneExists?: boolean
   readonly protocol?: string
+  readonly port?: number
   readonly maxScale?: number
   readonly targetUtilization?: number
 }
@@ -21,9 +21,17 @@ export interface ServerlessRdbConfig {
   readonly scaleWithWriter?: boolean
 }
 
+export interface ContainerDeploymentConfig {
+  readonly repositoryName?: string
+  readonly taskFile?: string
+  readonly alarmOnHttp4xx?: boolean
+  readonly http4xxThreshold?: number
+}
+
 export interface AppConfig {
   readonly name: string
-  readonly network: SecureReliableNetworkConfig
-  readonly service: ContainerServiceConfig
+  readonly network?: SecureReliableNetworkConfig
+  readonly service?: ContainerServiceConfig
   readonly db: ServerlessRdbConfig
+  readonly deployment?: ContainerDeploymentConfig
 }

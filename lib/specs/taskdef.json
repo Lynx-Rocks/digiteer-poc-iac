@@ -1,0 +1,46 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "{containerName}",
+      "image": "{repositoryUri}",
+      "cpu": 0,
+      "links": [],
+      "portMappings": [
+        {
+          "containerPort": {containerPort},
+          "hostPort": {containerPort},
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "secrets": [],
+      "dnsServers": [],
+      "dnsSearchDomains": [],
+      "extraHosts": [],
+      "dockerLabels": {},
+      "ulimits": [],
+      "systemControls": []
+    }
+  ],
+  "family": "{family}",
+  "taskRoleArn": "{taskRoleArn}",
+  "executionRoleArn": "{executionRoleArn}",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "tags": [
+    {
+      "key": "component",
+      "value": "service"
+    }
+  ]
+}

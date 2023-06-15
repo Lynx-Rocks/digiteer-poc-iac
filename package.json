@@ -5,9 +5,10 @@
     "app": "bin/app.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "cdk": "cdk"
+    "prebuild": "npx -y yaml2json cdk.context.yaml > cdk.context.json",
+    "build": "cdk synth",
+    "predeploy": "npx -y yaml2json cdk.context.yaml > cdk.context.json",
+    "deploy": "cdk deploy"
   },
   "devDependencies": {
     "@types/node": "^16.7.10",
