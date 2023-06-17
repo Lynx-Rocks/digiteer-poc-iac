@@ -5,13 +5,11 @@ Compute:
   Type: LAMBDA
   Fleet: Linux.Arm64.Large
 
-# Optional - Set automatic triggers.
 Triggers:
   - Type: Push
     Branches:
       - workflow
 
-# Required - Define action configurations.
 Actions:
   BootstrapCDK:
     # Identifies the action. Do not modify this value.
@@ -22,11 +20,9 @@ Actions:
         - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
           Name: AWS-Internal
       Name: prod
-    # Specifies the source and/or artifacts to pass to the action as input.
     Inputs:
-      # Optional
       Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
+        - WorkflowSource
     Configuration:
       Region: ap-southeast-1
   DeployCDK:
@@ -38,14 +34,12 @@ Actions:
         - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
           Name: AWS-Internal
       Name: prod
-    # Specifies the source and/or artifacts to pass to the action as input.
     Inputs:
-      # Optional
       Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
+        - WorkflowSource
     Configuration:
-      StackName: DigiteerPocIac
       Region: ap-southeast-1
+      StackName: DigiteerPocIac
       CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
     DependsOn:
       - BootstrapCDK
