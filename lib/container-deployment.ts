@@ -86,19 +86,21 @@ export class ContainerDeployment extends Resource {
     })
     repository.grantPull(executionRole)
     const repositoryOutputName = 'ImageRepositoryName'
-    new CfnOutput(this, repositoryOutputName, {
+    const repositoryOutput = new CfnOutput(this, repositoryOutputName, {
       value: repository.repositoryName,
       exportName: repositoryOutputName,
     })
+    repositoryOutput.overrideLogicalId(repositoryOutputName)
     const bucket = new Bucket(this, 'SourceBucket', {
       versioned: true,
     })
     bucket.grantRead(executionRole)
     const bucketOutputName = 'SourceBucketName'
-    new CfnOutput(this, bucketOutputName, {
+    const bucketOutput = new CfnOutput(this, bucketOutputName, {
       value: bucket.bucketName,
       exportName: bucketOutputName,
     })
+    bucketOutput.overrideLogicalId(bucketOutputName)
     const bucketKey = props.taskFile || 'task.json'
     const trail = new Trail(this, 'Trail')
     trail.addS3EventSelector([{
