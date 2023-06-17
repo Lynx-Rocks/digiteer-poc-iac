@@ -13,21 +13,24 @@ Actions:
   BootstrapCDK:
     # Identifies the action. Do not modify this value.
     Identifier: aws/cdk-bootstrap@v1.0.7
+    # Specifies the source and/or artifacts to pass to the action as input.
+    Inputs:
+      # Optional
+      Sources:
+        - WorkflowSource # This specifies that the action requires this Workflow as a source
+      Variables:
+        - Name: region
+          Value: ap-southeast-1
     # Required; You can use an environment, AWS account connection, and role to access AWS resources.
     Environment:
       Connections:
         - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
           Name: AWS-Internal
       Name: prod
-    # Specifies the source and/or artifacts to pass to the action as input.
-    Inputs:
-      # Optional
-      Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
     Compute:
       Type: EC2
     Configuration:
-      Region: ap-southeast-1
+      Region: $region
   DeployCDK:
     # Identifies the action. Do not modify this value.
     Identifier: aws/cdk-deploy@v1.0.12
