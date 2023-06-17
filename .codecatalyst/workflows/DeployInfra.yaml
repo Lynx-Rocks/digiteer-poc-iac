@@ -1,6 +1,9 @@
 Name: DeployInfra
 RunMode: SUPERSEDED
 SchemaVersion: "1.0"
+Compute:
+  Type: LAMBDA
+  Fleet: Linux.Arm64.Large
 
 # Optional - Set automatic triggers.
 Triggers:
@@ -24,8 +27,6 @@ Actions:
       # Optional
       Sources:
         - WorkflowSource # This specifies that the action requires this Workflow as a source
-    Compute:
-      Type: EC2
     Configuration:
       Region: ap-southeast-1
   DeployCDK:
@@ -42,8 +43,6 @@ Actions:
       # Optional
       Sources:
         - WorkflowSource # This specifies that the action requires this Workflow as a source
-    Compute:
-      Type: EC2 # Defines the action's properties.
     Configuration:
       StackName: DigiteerPocIac
       Region: ap-southeast-1
