@@ -17,6 +17,13 @@ app:
     username: "digiteer"
     createReader: false
     scaleWithWriter: false
+  firewall:
+    core: true
+    knownBadInputs: true
+    ipReputationList: true
+    sqlInjection: true
+    linuxVulnerabilities: true
+    posixVulnerabilities: true
   deployment: 
     repositoryName: "sample-repo"
     alarmOnHttp4xx: true

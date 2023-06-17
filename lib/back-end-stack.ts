@@ -15,6 +15,9 @@ import {
   ServerlessRdb,
 } from './serverless-rdb'
 import {
+  WebFirewall,
+} from './web-firewall'
+import {
   ContainerDeployment,
 } from './container-deployment'
 import {
@@ -37,6 +40,10 @@ export class BackEndStack extends Stack {
       ...props.db,
       vpc: network.vpc,
       peerSecurityGroup: service.albService.service.connections.securityGroups[0],
+    })
+    const firewall = new WebFirewall(this, 'Firewall', {
+      ...props.firewall,
+      loadBalancer: service.albService.loadBalancer,
     })
     const deployment = new ContainerDeployment(this, 'Deployment', {
       ...props.deployment,

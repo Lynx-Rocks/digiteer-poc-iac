@@ -21,6 +21,15 @@ export interface ServerlessRdbConfig {
   readonly scaleWithWriter?: boolean
 }
 
+export interface WebFirewallConfig {
+  readonly core?: boolean
+  readonly knownBadInputs?: boolean
+  readonly ipReputationList?: boolean
+  readonly sqlInjection?: boolean
+  readonly linuxVulnerabilities?: boolean
+  readonly posixVulnerabilities?: boolean
+}
+
 export interface ContainerDeploymentConfig {
   readonly repositoryName?: string
   readonly taskFile?: string
@@ -33,5 +42,6 @@ export interface AppConfig {
   readonly network?: SecureReliableNetworkConfig
   readonly service?: ContainerServiceConfig
   readonly db: ServerlessRdbConfig
+  readonly firewall?: WebFirewallConfig
   readonly deployment?: ContainerDeploymentConfig
 }

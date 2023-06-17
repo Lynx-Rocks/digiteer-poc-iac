@@ -76,17 +76,18 @@ export class ContainerDeployment extends Resource {
 
   constructor(scope: Construct, id: string, props: ContainerDeploymentProps) {
     super(scope, id)
-    const repository = new Repository(this, 'ImageRepository', {
-      repositoryName: props.repositoryName,
-    })
+    const stages = []
     const containerDefinition = props.containerDefinition
     const taskDefinition = containerDefinition.taskDefinition
     const executionRole = taskDefinition.executionRole!
+    const repository = new Repository(this, 'ImageRepository', {
+      repositoryName: props.repositoryName,
+    })
     repository.grantPull(executionRole)
-    const stages = []
     const bucket = new Bucket(this, 'SourceBucket', {
       versioned: true,
     })
+    bucket.grantRead(executionRole)
     const bucketKey = props.taskFile || 'task.json'
     const trail = new Trail(this, 'Trail')
     trail.addS3EventSelector([{
