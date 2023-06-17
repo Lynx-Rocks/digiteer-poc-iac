@@ -1,0 +1,52 @@
+Name: DeployInfra
+RunMode: SUPERSEDED
+SchemaVersion: "1.0"
+
+# Optional - Set automatic triggers.
+Triggers:
+  - Type: Push
+    Branches:
+      - workflow
+
+# Required - Define action configurations.
+Actions:
+  BootstrapCDK:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-bootstrap@v1.0.7
+    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
+    Environment:
+      Connections:
+        - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
+          Name: AWS-Internal
+      Name: prod
+    # Specifies the source and/or artifacts to pass to the action as input.
+    Inputs:
+      # Optional
+      Sources:
+        - WorkflowSource # This specifies that the action requires this Workflow as a source
+    Compute:
+      Type: EC2
+    Configuration:
+      Region: ap-southeast-1
+  DeployCDK:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-deploy@v1.0.12
+    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
+    Environment:
+      Connections:
+        - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
+          Name: AWS-Internal
+      Name: prod
+    # Specifies the source and/or artifacts to pass to the action as input.
+    Inputs:
+      # Optional
+      Sources:
+        - WorkflowSource # This specifies that the action requires this Workflow as a source
+    Compute:
+      Type: EC2 # Defines the action's properties.
+    Configuration:
+      StackName: DigiteerPoc
+      Region: ap-southeast-1
+      CfnOutputVariables: '{"ImageRepositoryName":"ImageRepositoryName","SourceBucketName":"SourceBucketName"}'
+    DependsOn:
+      - BootstrapCDK
