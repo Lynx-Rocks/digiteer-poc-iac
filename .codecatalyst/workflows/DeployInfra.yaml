@@ -76,7 +76,7 @@ Actions:
     Configuration:
       # Required - Steps are sequential instructions that run shell commands
       Steps:
-        - Run: e
+        - Run: npx -y yaml2json cdk.context.yaml > cdk.context.json
     Compute:
       Type: EC2
     Environment:
