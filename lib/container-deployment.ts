@@ -7,6 +7,7 @@ import {
 import {
   Resource,
   Duration,
+  CfnOutput,
 } from 'aws-cdk-lib'
 import {
   IVpc,
@@ -84,10 +85,20 @@ export class ContainerDeployment extends Resource {
       repositoryName: props.repositoryName,
     })
     repository.grantPull(executionRole)
+    const repositoryOutputName = 'ImageRepositoryName'
+    new CfnOutput(this, repositoryOutputName, {
+      value: repository.repositoryName,
+      exportName: repositoryOutputName,
+    })
     const bucket = new Bucket(this, 'SourceBucket', {
       versioned: true,
     })
     bucket.grantRead(executionRole)
+    const bucketOutputName = 'SourceBucketName'
+    new CfnOutput(this, bucketOutputName, {
+      value: bucket.bucketName,
+      exportName: bucketOutputName,
+    })
     const bucketKey = props.taskFile || 'task.json'
     const trail = new Trail(this, 'Trail')
     trail.addS3EventSelector([{
