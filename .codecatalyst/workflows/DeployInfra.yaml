@@ -45,8 +45,8 @@ Actions:
     Compute:
       Type: EC2 # Defines the action's properties.
     Configuration:
-      StackName: DigiteerPoc
+      StackName: DigiteerPocIac
       Region: ap-southeast-1
-      CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
+      CfnOutputVariables: '{"0":"ImageRepositoryName","1":"SourceBucketName"}'
     DependsOn:
       - BootstrapCDK
