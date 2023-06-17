@@ -5,12 +5,11 @@
     "app": "bin/app.js"
   },
   "scripts": {
-    "prebuild": "npx -y yaml2json cdk.context.yaml > cdk.context.json",
     "build": "cdk synth",
-    "predeploy": "npx -y yaml2json cdk.context.yaml > cdk.context.json",
     "deploy": "cdk deploy"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
     "@types/node": "^16.7.10",
     "aws-cdk": "2.83.1",
     "ts-node": "^10.2.1",
@@ -19,6 +18,7 @@
   "dependencies": {
     "aws-cdk-lib": "2.83.1",
     "constructs": "^10.0.0",
+    "js-yaml": "^4.1.0",
     "source-map-support": "^0.5.16"
   }
 }

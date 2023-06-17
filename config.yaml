@@ -1,0 +1,30 @@
+name: "DigiteerPocIac"
+network: 
+  allowExternalAccess: false
+service: 
+  rootDomain: "lynx.rocks"
+  subdomain: "digiteer"
+  dnsZoneExists: true
+  protocol: "http"
+  port: 3000
+  maxScale: 2
+  targetUtilization: 60
+db: 
+  engine: "PostgreSQL"
+  version: "15.2"
+  name: "SampleDb"
+  username: "digiteer"
+  createReader: false
+  scaleWithWriter: false
+firewall:
+  core: true
+  knownBadInputs: true
+  ipReputationList: true
+  sqlInjection: true
+  linuxVulnerabilities: true
+  posixVulnerabilities: true
+deployment: 
+  repositoryName: "sample-repo"
+  alarmOnHttp4xx: true
+  http4xxThreshold: 10
+  taskFile: "task.json"
