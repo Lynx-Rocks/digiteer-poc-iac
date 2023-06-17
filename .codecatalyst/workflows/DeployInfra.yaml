@@ -47,6 +47,6 @@ Actions:
     Configuration:
       StackName: DigiteerPocIac
       Region: ap-southeast-1
-      CfnOutputVariables: '{"0":"ImageRepositoryName","1":"SourceBucketName"}'
+      CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
     DependsOn:
       - BootstrapCDK
