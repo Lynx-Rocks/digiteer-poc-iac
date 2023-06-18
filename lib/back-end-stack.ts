@@ -47,6 +47,7 @@ export class BackEndStack extends Stack {
     })
     const deployment = new ContainerDeployment(this, 'Deployment', {
       ...props.deployment,
+      stage: props.stage!,
       service: service.albService.service,
       loadBalancer: service.albService.loadBalancer,
       targetGroup: service.albService.targetGroup,

@@ -41,6 +41,6 @@ Actions:
       Region: ap-southeast-1
       # Use <(app)name>-<stage> as defined in config.yaml
       StackName: DigiteerPocIac-prod
-      CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
+      CfnOutputVariables: '["ImageRepository-prod","SourceBucket-prod"]'
     DependsOn:
       - BootstrapCDK

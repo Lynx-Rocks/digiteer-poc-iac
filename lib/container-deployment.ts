@@ -65,6 +65,7 @@ import {
 } from './config'
 
 export interface ContainerDeploymentProps extends ContainerDeploymentConfig {
+  readonly stage: string
   readonly service: IBaseService
   readonly loadBalancer: IApplicationLoadBalancer
   readonly targetGroup: ITargetGroup
@@ -85,7 +86,7 @@ export class ContainerDeployment extends Resource {
       repositoryName: props.repositoryName,
     })
     repository.grantPull(executionRole)
-    const repositoryOutputName = 'ImageRepositoryName'
+    const repositoryOutputName = `ImageRepository-${props.stage}`
     const repositoryOutput = new CfnOutput(this, repositoryOutputName, {
       value: repository.repositoryName,
       exportName: repositoryOutputName,
@@ -95,7 +96,7 @@ export class ContainerDeployment extends Resource {
       versioned: true,
     })
     bucket.grantRead(executionRole)
-    const bucketOutputName = 'SourceBucketName'
+    const bucketOutputName = `SourceBucket-${props.stage}`
     const bucketOutput = new CfnOutput(this, bucketOutputName, {
       value: bucket.bucketName,
       exportName: bucketOutputName,

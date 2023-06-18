@@ -38,8 +38,8 @@ export interface ContainerDeploymentConfig {
 }
 
 export interface AppConfig {
+  stage?: string
   readonly name: string
-  readonly stage?: string
   readonly network?: SecureReliableNetworkConfig
   readonly service?: ContainerServiceConfig
   readonly db: ServerlessRdbConfig

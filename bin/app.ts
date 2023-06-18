@@ -17,14 +17,14 @@ import {
 } from '../lib/back-end-stack'
 
 const configYaml = readFileSync('config.yaml', 'utf8')
-const appConfig = load(configYaml) as AppConfig
+let appConfig = load(configYaml) as AppConfig
+appConfig.stage = appConfig.stage || 'dev'
 const env = {
   region: process.env.CDK_DEFAULT_REGION,
   account: process.env.CDK_DEFAULT_ACCOUNT,
 }
 const app = new App()
-const stage = appConfig.stage || 'dev'
-const stackId = `${appConfig.name}-${stage}`
+const stackId = `${appConfig.name}-${appConfig.stage}`
 new BackEndStack(app, stackId, {
   ...appConfig,
   env,
