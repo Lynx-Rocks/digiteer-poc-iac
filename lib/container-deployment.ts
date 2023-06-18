@@ -86,7 +86,7 @@ export class ContainerDeployment extends Resource {
       repositoryName: props.repositoryName,
     })
     repository.grantPull(executionRole)
-    const repositoryOutputName = `ImageRepository-${props.stage}`
+    const repositoryOutputName = `ImageRepositoryIn${props.stage}`
     const repositoryOutput = new CfnOutput(this, repositoryOutputName, {
       value: repository.repositoryName,
       exportName: repositoryOutputName,
@@ -96,7 +96,7 @@ export class ContainerDeployment extends Resource {
       versioned: true,
     })
     bucket.grantRead(executionRole)
-    const bucketOutputName = `SourceBucket-${props.stage}`
+    const bucketOutputName = `SourceBucketIn${props.stage}`
     const bucketOutput = new CfnOutput(this, bucketOutputName, {
       value: bucket.bucketName,
       exportName: bucketOutputName,
