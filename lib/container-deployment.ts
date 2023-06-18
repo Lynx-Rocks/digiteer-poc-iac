@@ -82,9 +82,7 @@ export class ContainerDeployment extends Resource {
     const containerDefinition = props.containerDefinition
     const taskDefinition = containerDefinition.taskDefinition
     const executionRole = taskDefinition.executionRole!
-    const repository = new Repository(this, 'ImageRepository', {
-      repositoryName: props.repositoryName,
-    })
+    const repository = new Repository(this, 'ImageRepository')
     repository.grantPull(executionRole)
     const repositoryOutputName = `ImageRepositoryIn${props.stage}`
     const repositoryOutput = new CfnOutput(this, repositoryOutputName, {

@@ -1,8 +1,8 @@
 name: DigiteerPocIac
 stage: prod
-network: 
+network:
   allowExternalAccess: false
-service: 
+service:
   rootDomain: lynx.rocks
   subdomain: digiteer
   dnsZoneExists: true
@@ -10,7 +10,7 @@ service:
   port: 3000
   maxScale: 2
   targetUtilization: 60
-db: 
+db:
   engine: PostgreSQL
   version: "15.2"
   name: SampleDb
@@ -24,8 +24,7 @@ firewall:
   sqlInjection: true
   linuxVulnerabilities: true
   posixVulnerabilities: true
-deployment: 
-  repositoryName: sample-repo
+deployment:
   alarmOnHttp4xx: true
   http4xxThreshold: 10
   taskFile: task.json
