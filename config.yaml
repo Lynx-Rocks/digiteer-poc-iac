@@ -4,6 +4,7 @@ network:
   allowExternalAccess: false
 service:
   rootDomain: lynx.rocks
+  # Remember to provide different subdomains per stage.
   subdomain: digiteer
   dnsZoneExists: true
   protocol: http

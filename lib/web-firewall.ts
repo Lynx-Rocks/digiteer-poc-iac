@@ -13,7 +13,7 @@ import {
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import {
   WebFirewallConfig,
-} from './config'
+} from '../config'
 
 export interface WebFirewallProps extends WebFirewallConfig {
   readonly loadBalancer: IApplicationLoadBalancer

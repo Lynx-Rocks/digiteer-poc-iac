@@ -22,7 +22,7 @@ import {
 } from './container-deployment'
 import {
   AppConfig
-} from './config'
+} from '../config'
 
 export interface BackEndProps extends StackProps, AppConfig {}
 

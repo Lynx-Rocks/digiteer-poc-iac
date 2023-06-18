@@ -22,7 +22,7 @@ import {
 } from 'aws-cdk-lib/aws-rds'
 import {
   ServerlessRdbConfig,
-} from './config'
+} from '../config'
 
 export interface ServerlessRdbProps extends ServerlessRdbConfig {
   readonly vpc: IVpc

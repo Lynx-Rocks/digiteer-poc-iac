@@ -31,7 +31,7 @@ import {
 } from 'aws-cdk-lib/aws-route53'
 import {
   ContainerServiceConfig,
-} from './config'
+} from '../config'
 
 export interface ContainerServiceProps extends ContainerServiceConfig {
   readonly vpc: IVpc
@@ -49,7 +49,7 @@ export class ContainerService extends Resource {
     let domainZone
     const rootDomain = props.rootDomain
     if (rootDomain) {
-      domainName = (props.subdomain ? props.subdomain + '.' : '') + rootDomain
+      domainName = (props.subdomain ? `${props.subdomain}.` : '') + rootDomain
       domainZone = props.dnsZoneExists ?
         HostedZone.fromLookup(this, 'ServiceHostedZone', {
           domainName: rootDomain,

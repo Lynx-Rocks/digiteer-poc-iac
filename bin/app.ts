@@ -11,7 +11,7 @@ import {
 } from 'aws-cdk-lib'
 import {
   AppConfig,
-} from '../lib/config'
+} from '../config'
 import {
   BackEndStack,
 } from '../lib/back-end-stack'

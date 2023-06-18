@@ -62,7 +62,7 @@ import {
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import {
   ContainerDeploymentConfig,
-} from './config'
+} from '../config'
 
 export interface ContainerDeploymentProps extends ContainerDeploymentConfig {
   readonly stage: string

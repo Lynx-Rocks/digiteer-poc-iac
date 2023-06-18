@@ -10,7 +10,7 @@ import {
 } from 'aws-cdk-lib/aws-ec2'
 import {
   SecureReliableNetworkConfig,
-} from './config'
+} from '../config'
 
 export interface SecureReliableNetworkProps extends SecureReliableNetworkConfig {}
 
