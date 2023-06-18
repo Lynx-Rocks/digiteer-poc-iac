@@ -44,7 +44,7 @@ Actions:
         - WorkflowSource
     Configuration:
       Region: ap-southeast-1
-      StackName: $appName-$stage
+      StackName: ${appName}-${stage}
       CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
     DependsOn:
       - BootstrapCDK
