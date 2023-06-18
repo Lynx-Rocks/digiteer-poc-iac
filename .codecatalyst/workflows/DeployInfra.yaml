@@ -35,11 +35,16 @@ Actions:
           Name: AWS-Internal
       Name: prod
     Inputs:
+      Variables:
+        - Name: appName
+          Value: DigiteerPocIac
+        - Name: stage
+          Value: prod
       Sources:
         - WorkflowSource
     Configuration:
       Region: ap-southeast-1
-      StackName: DigiteerPocIac
+      StackName: $appName-$stage
       CfnOutputVariables: '["ImageRepositoryName","SourceBucketName"]'
     DependsOn:
       - BootstrapCDK

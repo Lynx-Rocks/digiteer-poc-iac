@@ -23,7 +23,9 @@ const env = {
   account: process.env.CDK_DEFAULT_ACCOUNT,
 }
 const app = new App()
-new BackEndStack(app, appConfig.name, {
+const stage = appConfig.stage || 'dev'
+const stackId = `${appConfig.name}-${stage}`
+new BackEndStack(app, stackId, {
   ...appConfig,
   env,
 })
