@@ -45,9 +45,10 @@ export class BackEndStack extends Stack {
       ...props.firewall,
       loadBalancer: service.albService.loadBalancer,
     })
+    const appId = `${props.name}At${props.stage}`
     const deployment = new ContainerDeployment(this, 'Deployment', {
       ...props.deployment,
-      stage: props.stage!,
+      appId,
       service: service.albService.service,
       loadBalancer: service.albService.loadBalancer,
       targetGroup: service.albService.targetGroup,
