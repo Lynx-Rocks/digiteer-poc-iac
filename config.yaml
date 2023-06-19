@@ -28,4 +28,4 @@ firewall:
 deployment:
   alarmOnHttp4xx: true
   http4xxThreshold: 10
-  taskFile: task.json
+  taskFilename: task.json

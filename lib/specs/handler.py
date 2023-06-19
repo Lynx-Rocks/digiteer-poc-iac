@@ -24,27 +24,27 @@ def load_config(str):
   try:
     return loads(str)
   except JSONDecodeError as e:
-    msg = 'Error loading config: {}'.format(e)
+    msg = f'Error loading config: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def read_file(filename):
   try:
     with open(filename, 'r') as f:
       return f.read()
   except (IOError, OSError) as e:
-    msg = 'Error reading file: {}'.format(e)
+    msg = f'Error reading file: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def write_file(filename, content):
   try:
     with open(filename, 'w') as f:
       f.write(content)
   except (IOError, OSError) as e:
-    msg = 'Error writing file: {}'.format(e)
+    msg = f'Error writing file: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def fill_template(template, parameters):
   for token, value in parameters.items():
@@ -63,9 +63,9 @@ def setup_s3_client(job_data):
     config = Config(signature_version='s3v4')
     return session.client('s3', config=config)
   except BotoCoreError as e:
-    msg = 'Error creating S3 client: {}'.format(e)
+    msg = f'Error creating S3 client: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def get_artifact(s3, artifact, filename):
   s3Location = artifact['location']['s3Location']
@@ -74,9 +74,9 @@ def get_artifact(s3, artifact, filename):
   try:
     s3.download_file(bucket, key, filename)
   except BotoCoreError as e:
-    msg = 'Error getting artifact: {}'.format(e)
+    msg = f'Error getting artifact: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def put_artifact(s3, artifact, filename, contentType):
   s3Location = artifact['location']['s3Location']
@@ -88,9 +88,9 @@ def put_artifact(s3, artifact, filename, contentType):
   try:
     s3.upload_file(filename, bucket, key, ExtraArgs=extra_args)
   except BotoCoreError as e:
-    msg = 'Error putting artifact: {}'.format(e)
+    msg = f'Error putting artifact: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def write_zip(zip_filename, arcname, content):
   try:
@@ -99,9 +99,9 @@ def write_zip(zip_filename, arcname, content):
       with ZipFile(zip_filename, 'a') as zip:
         zip.write(tmp_file.name, arcname=arcname)
   except (BadZipFile, IOError, OSError) as e:
-    msg = 'Error writing zip file: {}'.format(e)
+    msg = f'Error writing zip file: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 # The following functions are specific to this CodePipeline Job.
 
@@ -111,9 +111,9 @@ def get_artifact_content(s3, artifact):
       get_artifact(s3, artifact, tmp_file.name)
       return read_file(tmp_file.name)
   except (IOError, OSError) as e:
-    msg = 'Error using temporary file: {}'.format(e)
+    msg = f'Error using temporary file: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def put_artifact_contents(s3, artifact, content_map):
   try:
@@ -122,9 +122,9 @@ def put_artifact_contents(s3, artifact, content_map):
         write_zip(zip_file.name, arcname, content)
       put_artifact(s3, artifact, zip_file.name, 'zip')
   except (IOError, OSError) as e:
-    msg = 'Error using temporary file: {}'.format(e)
+    msg = f'Error using temporary file: {e}'
     logger.error(msg)
-    raise JobError(msg)
+    raise JobError(msg) from e
 
 def on_event(event, context):
   cp_job = event['CodePipeline.job']

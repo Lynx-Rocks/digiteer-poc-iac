@@ -100,7 +100,7 @@ export class ContainerDeployment extends Resource {
       exportName: bucketOutputName,
     })
     bucketOutput.overrideLogicalId(bucketOutputName)
-    const bucketKey = props.taskFile || 'task.json'
+    const bucketKey = props.taskFilename || 'task.json'
     const trail = new Trail(this, 'Trail')
     trail.addS3EventSelector([{
       bucket,

@@ -31,7 +31,7 @@ export interface WebFirewallConfig {
 }
 
 export interface ContainerDeploymentConfig {
-  readonly taskFile?: string
+  readonly taskFilename?: string
   readonly alarmOnHttp4xx?: boolean
   readonly http4xxThreshold?: number
 }
