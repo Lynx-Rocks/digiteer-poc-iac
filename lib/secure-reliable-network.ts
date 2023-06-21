@@ -54,6 +54,7 @@ export class SecureReliableNetwork extends Resource {
       })
     }
     this.vpc = vpc
+    // ToDo: Loop this.
     let gatewayEndpoints = []
     const gatewayEndpointServices = props.gatewayEndpointServices || []
     for (const service of gatewayEndpointServices) {

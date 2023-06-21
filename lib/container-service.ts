@@ -13,6 +13,9 @@ import {
   SecurityGroup,
 } from 'aws-cdk-lib/aws-ec2'
 import {
+  IHostedZone,
+} from 'aws-cdk-lib/aws-route53'
+import {
   Cluster,
   AssetImage,
   FargateTaskDefinition,
@@ -26,14 +29,13 @@ import {
   ApplicationProtocol,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import {
-  HostedZone,
-} from 'aws-cdk-lib/aws-route53'
-import {
   ContainerServiceConfig,
 } from '../config'
 
 export interface ContainerServiceProps extends ContainerServiceConfig {
   readonly vpc: IVpc
+  readonly domainName?: string
+  readonly domainZone?: IHostedZone
   readonly dependencies?: IDependable[]
 }
 
@@ -45,24 +47,8 @@ export class ContainerService extends Resource {
 
   constructor(scope: Construct, id: string, props: ContainerServiceProps) {
     super(scope, id)
-    let domainName
-    let domainZone
-    const rootDomain = props.rootDomain
-    if (rootDomain) {
-      domainName = (props.subdomain ? `${props.subdomain}.` : '') + rootDomain
-      domainZone = props.dnsZoneExists ?
-        HostedZone.fromLookup(this, 'ServiceHostedZone', {
-          domainName: rootDomain,
-        }) :
-        new HostedZone(this, 'ServiceHostedZone', {
-          zoneName: rootDomain,
-        })
-    }
     const protocol = props.protocol == 'http' ? ApplicationProtocol.HTTP : ApplicationProtocol.HTTPS
     this.protocol = protocol
-    if (protocol == ApplicationProtocol.HTTPS && !domainName) {
-      throw new Error('HTTPS protocol requires a domain.')
-    }
     const deploymentController = {
       type: DeploymentControllerType.CODE_DEPLOY,
     }
@@ -93,6 +79,11 @@ export class ContainerService extends Resource {
       image,
       portMappings,
     })
+    const domainName = props.domainName
+    const domainZone = props.domainZone
+    if (protocol == ApplicationProtocol.HTTPS && !(domainName && domainZone)) {
+      throw new Error('HTTPS protocol requires a domain.')
+    }
     const albService = new ApplicationLoadBalancedFargateService(this, 'Service', {
       taskDefinition,
       domainName,

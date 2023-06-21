@@ -34,6 +34,9 @@ export class ServerlessRdb extends Resource {
   constructor(scope: Construct, id: string, props: ServerlessRdbProps) {
     super(scope, id)
     // Create the serverless cluster, provide all values needed to customise the database.
+    if (!props.version) {
+      throw new Error('Database version is required.')
+    }
     let engine
     let port
     if (props.engine == 'MySQL') {
@@ -42,7 +45,7 @@ export class ServerlessRdb extends Resource {
         version,
       })
       port = Port.tcp(3306)
-    } else /* props.engine == 'PostgreSQL' */ {
+    } else if (props.engine == 'PostgreSQL') {
       const fullVersion = props.version
       const verArr = fullVersion.split('.')
       const majorVersion = verArr[0]
@@ -51,8 +54,13 @@ export class ServerlessRdb extends Resource {
         version,
       })
       port = Port.tcp(5432)
+    } else {
+      throw new Error('Database engine not supported.')
     }
     // Create username and password secret for DB Cluster
+    if (!props.username) {
+      throw new Error('Database username is required.')
+    }
     const credentials = {
       username: props.username,
     }

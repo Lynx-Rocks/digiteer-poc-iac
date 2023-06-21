@@ -3,10 +3,16 @@ export interface SecureReliableNetworkConfig {
   readonly allowExternalAccess?: boolean
 }
 
+export interface WebDomainConfig {
+  readonly useFromStage?: string
+  readonly root?: string
+}
+
+export interface UniqueWebDomainConfig extends WebDomainConfig {
+  readonly sub?: string
+}
+
 export interface ContainerServiceConfig {
-  readonly rootDomain?: string
-  readonly subdomain?: string
-  readonly dnsZoneExists?: boolean
   readonly protocol?: string
   readonly port?: number
   readonly maxScale?: number
@@ -14,9 +20,9 @@ export interface ContainerServiceConfig {
 }
 
 export interface ServerlessRdbConfig {
-  readonly engine: string
-  readonly version: string
-  readonly username: string
+  readonly engine?: string
+  readonly version?: string
+  readonly username?: string
   readonly createReader?: boolean
   readonly scaleWithWriter?: boolean
 }
@@ -36,12 +42,27 @@ export interface ContainerDeploymentConfig {
   readonly http4xxThreshold?: number
 }
 
-export interface AppConfig {
-  stage?: string
-  readonly name: string
+export interface CommonConfig {
   readonly network?: SecureReliableNetworkConfig
+  readonly domain?: WebDomainConfig
   readonly service?: ContainerServiceConfig
-  readonly db: ServerlessRdbConfig
+  readonly db?: ServerlessRdbConfig
   readonly firewall?: WebFirewallConfig
   readonly deployment?: ContainerDeploymentConfig
+}
+
+export interface StageConfig {
+  readonly name: string
+  readonly network?: SecureReliableNetworkConfig
+  readonly domain?: UniqueWebDomainConfig
+  readonly service?: ContainerServiceConfig
+  readonly db?: ServerlessRdbConfig
+  readonly firewall?: WebFirewallConfig
+  readonly deployment?: ContainerDeploymentConfig
+}
+
+export interface AppConfig {
+  readonly name: string
+  readonly common?: CommonConfig
+  readonly stages: StageConfig[]
 }

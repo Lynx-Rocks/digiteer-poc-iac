@@ -5,6 +5,7 @@ import {
   Construct,
 } from 'constructs'
 import {
+  Stack,
   Resource,
   Duration,
   CfnOutput,
@@ -65,7 +66,6 @@ import {
 } from '../config'
 
 export interface ContainerDeploymentProps extends ContainerDeploymentConfig {
-  readonly appId: string
   readonly service: IBaseService
   readonly loadBalancer: IApplicationLoadBalancer
   readonly targetGroup: ITargetGroup
@@ -84,7 +84,10 @@ export class ContainerDeployment extends Resource {
     const executionRole = taskDefinition.executionRole!
     const repository = new Repository(this, 'ImageRepository')
     repository.grantPull(executionRole)
-    const repositoryOutputName = `RepositoryOf${props.appId}`
+    const stack = Stack.of(this)
+    const stackName = stack.stackName.replace(/-/g, '')
+    // ToDo: Loop this.
+    const repositoryOutputName = `RepositoryOf${stackName}`
     const repositoryOutput = new CfnOutput(this, repositoryOutputName, {
       value: repository.repositoryName,
       exportName: repositoryOutputName,
@@ -94,7 +97,7 @@ export class ContainerDeployment extends Resource {
       versioned: true,
     })
     bucket.grantRead(executionRole)
-    const bucketOutputName = `BucketOf${props.appId}`
+    const bucketOutputName = `BucketOf${stackName}`
     const bucketOutput = new CfnOutput(this, bucketOutputName, {
       value: bucket.bucketName,
       exportName: bucketOutputName,

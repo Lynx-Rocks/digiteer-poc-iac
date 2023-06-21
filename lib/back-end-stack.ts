@@ -11,8 +11,14 @@ import {
   Vpc,
 } from 'aws-cdk-lib/aws-ec2'
 import {
+  HostedZone,
+} from 'aws-cdk-lib/aws-route53'
+import {
   SecureReliableNetwork,
 } from './secure-reliable-network'
+import {
+  WebDomain,
+} from './web-domain'
 import {
   ContainerService,
 } from './container-service'
@@ -26,16 +32,18 @@ import {
   ContainerDeployment,
 } from './container-deployment'
 import {
-  AppConfig
+  StageConfig,
 } from '../config'
 
-export interface BackEndProps extends StackProps, AppConfig {
+export interface BackEndProps extends StackProps, StageConfig {
   readonly vpc?: Vpc
+  readonly hostedZone?: HostedZone
 }
 
 export class BackEndStack extends Stack {
 
   public readonly vpc: Vpc
+  public readonly hostedZone?: HostedZone
 
   constructor(scope: Construct, id: string, props: BackEndProps) {
     super(scope, id, props)
@@ -57,6 +65,11 @@ export class BackEndStack extends Stack {
       interfaceEndpointServices,
     })
     this.vpc = network.vpc
+    const domain = new WebDomain(this, 'Domain', {
+      ...props.domain,
+      hostedZone: props.hostedZone,
+    })
+    this.hostedZone = domain.hostedZone
     const dependencies = [
       ...network.gatewayEndpoints,
       ...network.interfaceEndpoints,
@@ -64,6 +77,8 @@ export class BackEndStack extends Stack {
     const service = new ContainerService(this, 'Service', {
       ...props.service,
       vpc: network.vpc,
+      domainName: domain.hostName,
+      domainZone: domain.hostedZone,
       dependencies,
     })
     const db = new ServerlessRdb(this, 'Db', {
@@ -75,10 +90,8 @@ export class BackEndStack extends Stack {
       ...props.firewall,
       loadBalancer: service.albService.loadBalancer,
     })
-    const appId = `${props.name}At${props.stage}`
     const deployment = new ContainerDeployment(this, 'Deployment', {
       ...props.deployment,
-      appId,
       service: service.albService.service,
       loadBalancer: service.albService.loadBalancer,
       targetGroup: service.albService.targetGroup,
