@@ -84,6 +84,14 @@ export class ContainerService extends Resource {
     if (protocol == ApplicationProtocol.HTTPS && !(domainName && domainZone)) {
       throw new Error('HTTPS protocol requires a domain.')
     }
+    const capacityProvider = props.useSpot ? 'FARGATE_SPOT' : 'FARGATE'
+    const capacityProviderStrategy = {
+      capacityProvider,
+      weight: 1,
+    }
+    const capacityProviderStrategies = [
+      capacityProviderStrategy,
+    ]
     const albService = new ApplicationLoadBalancedFargateService(this, 'Service', {
       taskDefinition,
       domainName,
@@ -92,6 +100,7 @@ export class ContainerService extends Resource {
       deploymentController,
       securityGroups,
       cluster,
+      capacityProviderStrategies,
     })
     this.albService = albService
     const dependencies = props.dependencies || []

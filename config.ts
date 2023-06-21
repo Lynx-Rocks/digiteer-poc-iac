@@ -17,6 +17,7 @@ export interface ContainerServiceConfig {
   readonly port?: number
   readonly maxScale?: number
   readonly targetUtilization?: number
+  readonly useSpot?: boolean
 }
 
 export interface ServerlessRdbConfig {
