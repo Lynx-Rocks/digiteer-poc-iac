@@ -53,12 +53,10 @@ export class ServerlessRdb extends Resource {
       port = Port.tcp(5432)
     }
     // Create username and password secret for DB Cluster
-    new DatabaseSecret(this, 'DbCredentials', {
-      username: props.username,
-    })
     const credentials = {
       username: props.username,
     }
+    new DatabaseSecret(this, 'DbCredentials', credentials)
     const enablePerformanceInsights = true
     const writer = ClusterInstance.serverlessV2('Writer', {
       enablePerformanceInsights,
@@ -87,7 +85,6 @@ export class ServerlessRdb extends Resource {
       credentials,
       writer,
       readers,
-      defaultDatabaseName: props.name,
       serverlessV2MaxCapacity: 128,
       securityGroups,
       vpc,

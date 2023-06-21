@@ -1,4 +1,5 @@
 export interface SecureReliableNetworkConfig {
+  readonly useFromStage?: string
   readonly allowExternalAccess?: boolean
 }
 
@@ -15,7 +16,6 @@ export interface ContainerServiceConfig {
 export interface ServerlessRdbConfig {
   readonly engine: string
   readonly version: string
-  readonly name: string
   readonly username: string
   readonly createReader?: boolean
   readonly scaleWithWriter?: boolean

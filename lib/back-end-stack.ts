@@ -6,6 +6,11 @@ import {
   StackProps,
 } from 'aws-cdk-lib'
 import {
+  GatewayVpcEndpointAwsService,
+  InterfaceVpcEndpointAwsService,
+  Vpc,
+} from 'aws-cdk-lib/aws-ec2'
+import {
   SecureReliableNetwork,
 } from './secure-reliable-network'
 import {
@@ -24,17 +29,42 @@ import {
   AppConfig
 } from '../config'
 
-export interface BackEndProps extends StackProps, AppConfig {}
+export interface BackEndProps extends StackProps, AppConfig {
+  readonly vpc?: Vpc
+}
 
 export class BackEndStack extends Stack {
+
+  public readonly vpc: Vpc
+
   constructor(scope: Construct, id: string, props: BackEndProps) {
     super(scope, id, props)
+    const gatewayEndpointServices = [
+      // Pulling a CDK image asset requires ECS task to access S3.
+      GatewayVpcEndpointAwsService.S3,
+    ]
+    const interfaceEndpointServices = [
+      // Pulling a CDK image asset requires ECS task to access ECR.
+      InterfaceVpcEndpointAwsService.ECR,
+      InterfaceVpcEndpointAwsService.ECR_DOCKER,
+      // The service may need to send logs to CloudWatch.
+      InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
+    ]
     const network = new SecureReliableNetwork(this, 'Network', {
       ...props.network,
+      vpc: props.vpc,
+      gatewayEndpointServices,
+      interfaceEndpointServices,
     })
+    this.vpc = network.vpc
+    const dependencies = [
+      ...network.gatewayEndpoints,
+      ...network.interfaceEndpoints,
+    ]
     const service = new ContainerService(this, 'Service', {
       ...props.service,
       vpc: network.vpc,
+      dependencies,
     })
     const db = new ServerlessRdb(this, 'Db', {
       ...props.db,
@@ -57,4 +87,5 @@ export class BackEndStack extends Stack {
       vpc: network.vpc,
     })
   }
+
 }

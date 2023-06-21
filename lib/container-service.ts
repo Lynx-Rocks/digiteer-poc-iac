@@ -3,6 +3,7 @@ import {
 } from 'path'
 import {
   Construct,
+  IDependable,
 } from 'constructs'
 import {
   Resource,
@@ -10,8 +11,6 @@ import {
 import {
   IVpc,
   SecurityGroup,
-  GatewayVpcEndpointAwsService,
-  InterfaceVpcEndpointAwsService,
 } from 'aws-cdk-lib/aws-ec2'
 import {
   Cluster,
@@ -35,6 +34,7 @@ import {
 
 export interface ContainerServiceProps extends ContainerServiceConfig {
   readonly vpc: IVpc
+  readonly dependencies?: IDependable[]
 }
 
 export class ContainerService extends Resource {
@@ -67,20 +67,6 @@ export class ContainerService extends Resource {
       type: DeploymentControllerType.CODE_DEPLOY,
     }
     const vpc = props.vpc
-    // Pulling a CDK image asset requires ECS task to access S3 and ECR. 
-    const s3VpcEndpoint = vpc.addGatewayEndpoint('S3VpcEndpoint', {
-      service: GatewayVpcEndpointAwsService.S3,
-    })
-    const ecrVpcEndpoint = vpc.addInterfaceEndpoint('EcrVpcEndpoint', {
-      service: InterfaceVpcEndpointAwsService.ECR,
-    })
-    const dockerVpcEndpoint = vpc.addInterfaceEndpoint('DockerVpcEndpoint', {
-      service: InterfaceVpcEndpointAwsService.ECR_DOCKER,
-    })
-    // The service may need to send logs to CloudWatch.
-    vpc.addInterfaceEndpoint('CloudWatchLogsVpcEndpoint', {
-      service: InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
-    })
     const securityGroup = new SecurityGroup(this, 'ServiceSecurityGroup', {
       vpc,
     })
@@ -117,9 +103,10 @@ export class ContainerService extends Resource {
       cluster,
     })
     this.albService = albService
-    albService.node.addDependency(s3VpcEndpoint)
-    albService.node.addDependency(ecrVpcEndpoint)
-    albService.node.addDependency(dockerVpcEndpoint)
+    const dependencies = props.dependencies || []
+    for (const dependency of dependencies) {
+      albService.node.addDependency(dependency)
+    }
     const maxCapacity = props.maxScale || 10
     const scalableTarget = albService.service.autoScaleTaskCount({
       maxCapacity,

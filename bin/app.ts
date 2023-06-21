@@ -25,7 +25,16 @@ const env = {
 }
 const app = new App()
 const stackId = `${appConfig.name}-${appConfig.stage}`
-new BackEndStack(app, stackId, {
+const devStack = new BackEndStack(app, stackId, {
   ...appConfig,
   env,
+})
+
+// ToDo: Remove this as it's a test only.
+appConfig.stage = 'staging'
+const stagingStackId = `${appConfig.name}-${appConfig.stage}`
+new BackEndStack(app, stagingStackId, {
+  ...appConfig,
+  env,
+  vpc: devStack.vpc,
 })
