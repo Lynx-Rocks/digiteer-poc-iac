@@ -5,10 +5,7 @@ Compute:
   Type: LAMBDA
   Fleet: Linux.Arm64.Large
 
-Triggers:
-  - Type: Push
-    Branches:
-      - main
+Triggers: []
 
 Actions:
   BootstrapCDK:
