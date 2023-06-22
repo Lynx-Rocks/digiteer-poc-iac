@@ -1,4 +1,4 @@
-Name: DeployInfra
+Name: deploy-dev
 RunMode: SUPERSEDED
 SchemaVersion: "1.0"
 Compute:
@@ -19,7 +19,7 @@ Actions:
       Connections:
         - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
           Name: AWS-Internal
-      Name: prod
+      Name: dev
     Inputs:
       Sources:
         - WorkflowSource
@@ -33,14 +33,14 @@ Actions:
       Connections:
         - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
           Name: AWS-Internal
-      Name: prod
+      Name: dev
     Inputs:
       Sources:
         - WorkflowSource
     Configuration:
       Region: ap-southeast-1
       # Use <(app)name>-<stage> as defined in config.yaml
-      StackName: DigiteerPocIac-prod
-      CfnOutputVariables: '["ImageRepository-prod","SourceBucket-prod"]'
+      StackName: DigiteerPocIac-dev
+      CfnOutputVariables: '["RepositoryOfDigiteerPocIacdev","BucketOfDigiteerPocIacdev"]'
     DependsOn:
       - BootstrapCDK

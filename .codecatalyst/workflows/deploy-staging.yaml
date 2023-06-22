@@ -1,0 +1,46 @@
+Name: deploy-staging
+RunMode: SUPERSEDED
+SchemaVersion: "1.0"
+Compute:
+  Type: LAMBDA
+  Fleet: Linux.Arm64.Large
+
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+
+Actions:
+  BootstrapCDK:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-bootstrap@v1.0.7
+    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
+    Environment:
+      Connections:
+        - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
+          Name: AWS-Internal
+      Name: staging
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Configuration:
+      Region: ap-southeast-1
+  DeployCDK:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-deploy@v1.0.12
+    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
+    Environment:
+      Connections:
+        - Role: CodeCatalystWorkflowDevelopmentRole-Lynx-Rocks
+          Name: AWS-Internal
+      Name: staging
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Configuration:
+      Region: ap-southeast-1
+      # Use <(app)name>-<stage> as defined in config.yaml
+      StackName: DigiteerPocIac-staging
+      CfnOutputVariables: '["RepositoryOfDigiteerPocIacstaging","BucketOfDigiteerPocIacstaging"]'
+    DependsOn:
+      - BootstrapCDK
